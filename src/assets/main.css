@@ -4,8 +4,15 @@
 :root {
   /* Colors */
   --primary-color: #f2b16f;
-  --secondary-color: #65aba9;
+  --secondary-color: #d98e47;
   --tertiary-color: #71bcb7;
+  --quaternary-color: #538b87;
+  --quinary-color: #e0c068;
+  --accessible-primary: #5cb85c; /* A more saturated green - good contrast */
+  --accessible-secondary: #0275d8; /* A distinct blue - generally well-perceived */
+  --accessible-tertiary: #aa6c39; /* A darker, more distinct brown */
+  --accessible-quaternary: #c45850; /* A contrasting red/orange */
+  --accessible-quinary: #6f42c1; /* A noticeable purple */
   --background-gradient-start: #d7aa80;
   --background-gradient-end: #f3d8bd;
   --text-color: var(--vt-c-text-light-1);

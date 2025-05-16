@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect x="0" y="0" width="800" height="500" fill="#f8f9fa"/>
+    
+    <!-- NERC Regions -->
+    <!-- WECC (Western) -->
+    <path d="M50 50 L200 50 L250 200 L200 350 L100 400 L50 300 Z" 
+          fill="#f2b16f" stroke="#333" stroke-width="2">
+        <title>WECC - Western Electricity Coordinating Council</title>
+    </path>
+    
+    <!-- MRO (Midwest) -->
+    <path d="M200 50 L350 50 L350 200 L250 200 Z" 
+          fill="#d98e47" stroke="#333" stroke-width="2">
+        <title>MRO - Midwest Reliability Organization</title>
+    </path>
+    
+    <!-- NPCC (Northeast) -->
+    <path d="M350 50 L500 50 L500 200 L350 200 Z" 
+          fill="#71bcb7" stroke="#333" stroke-width="2">
+        <title>NPCC - Northeast Power Coordinating Council</title>
+    </path>
+    
+    <!-- RFC (ReliabilityFirst) -->
+    <path d="M350 200 L500 200 L450 350 L300 350 Z" 
+          fill="#538b87" stroke="#333" stroke-width="2">
+        <title>RFC - ReliabilityFirst Corporation</title>
+    </path>
+    
+    <!-- SERC (Southeast) -->
+    <path d="M300 350 L450 350 L500 450 L250 450 Z" 
+          fill="#e0c068" stroke="#333" stroke-width="2">
+        <title>SERC - SERC Reliability Corporation</title>
+    </path>
+    
+    <!-- TRE (Texas) -->
+    <path d="M200 350 L300 350 L250 450 L200 450 Z" 
+          fill="#d7aa80" stroke="#333" stroke-width="2">
+        <title>TRE - Texas Reliability Entity</title>
+    </path>
+
+    <!-- Labels -->
+    <style>
+        .region-label {
+            font-family: var(--font-family-primary, 'Baloo 2');
+            font-size: 14px;
+            fill: #333;
+        }
+    </style>
+    <text x="125" y="200" class="region-label">WECC</text>
+    <text x="275" y="125" class="region-label">MRO</text>
+    <text x="425" y="125" class="region-label">NPCC</text>
+    <text x="375" y="275" class="region-label">RFC</text>
+    <text x="375" y="400" class="region-label">SERC</text>
+    <text x="225" y="400" class="region-label">TRE</text>
+
+    <!-- Legend -->
+    <rect x="600" y="50" width="150" height="200" fill="#fff" stroke="#333"/>
+    <text x="625" y="80" class="region-label" style="font-weight: bold">NERC Regions</text>
+    <rect x="625" y="100" width="20" height="20" fill="#f2b16f"/>
+    <text x="655" y="115" class="region-label">WECC</text>
+    <rect x="625" y="130" width="20" height="20" fill="#d98e47"/>
+    <text x="655" y="145" class="region-label">MRO</text>
+    <rect x="625" y="160" width="20" height="20" fill="#71bcb7"/>
+    <text x="655" y="175" class="region-label">NPCC</text>
+    <rect x="625" y="190" width="20" height="20" fill="#538b87"/>
+    <text x="655" y="205" class="region-label">RFC</text>
+    <rect x="625" y="220" width="20" height="20" fill="#e0c068"/>
+    <text x="655" y="235" class="region-label">SERC</text>
+</svg> 

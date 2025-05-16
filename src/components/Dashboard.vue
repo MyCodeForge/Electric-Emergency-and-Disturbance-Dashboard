@@ -59,32 +59,33 @@
             </div>
           </div>
         </div>
-      </div>
-      
-      <div class="dashboard">
+
         <div class="row">
-          <div class="col">
-            
-            <div class="chart-section">
-              <EventChart :events="filteredEvents" />
+          <div class="widgets col">
+            <div class="widget">
+              <div class="chart-section">
+                <EventChart :events="filteredEvents" />
+              </div>
             </div>
           </div>
 
-          <div class="col">
-            <div class="summary-section">
-              <SummaryCard title="Total Events" :value="totalEvents" />
-              <SummaryCard title="Average Demand Loss" :value="averageDemandLoss" />
-            </div>
-            <div class="summary-section">
-              <SummaryCard title="Total Events" :value="totalEvents" />
-              <SummaryCard title="Average Demand Loss" :value="averageDemandLoss" />
-            </div>
-            <div class="summary-section">
-              <SummaryCard title="Total Events" :value="totalEvents" />
-              <SummaryCard title="Average Demand Loss" :value="averageDemandLoss" />
+          <div class="widgets col">
+            <div class="widget">
+              <div class="map-section">
+                <h3>NERC Regions Map</h3>
+                <img src="../assets/nerc-regions.svg" alt="NERC Regions Map" class="nerc-map">
+              </div>
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="chart-section col widgets">
+            <ImpactScatterChart title="Demand Loss vs Customers Affected" :events="filteredEvents" />
+          </div>
+        </div>
+      </div>
+      
+      <div class="dashboard">
         <div class="row">
           <div class="table-section col">
             <EventTable :events="filteredEvents" />
@@ -101,6 +102,7 @@
   import SummaryCard from './SummaryCard.vue';
   import PowerSummaryCard from './PowerSummaryCard.vue';
   import RingChart from './RingChart.vue';
+  import ImpactScatterChart from './ImpactScatterChart.vue';
   import { apiService } from '../services/api.service';
   import type { DisturbanceEvent } from '../types/api';
   
@@ -240,5 +242,22 @@
   .chart-section,
   .table-section {
     margin-bottom: 20px;
+  }
+
+  .map-section {
+    padding: var(--spacing-sm);
+    text-align: center;
+  }
+
+  .map-section h3 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-color);
+  }
+
+  .nerc-map {
+    width: 100%;
+    height: auto;
+    max-width: 800px;
+    border-radius: var(--border-radius-sm);
   }
   </style>

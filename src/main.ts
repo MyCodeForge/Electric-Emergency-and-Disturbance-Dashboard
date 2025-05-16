@@ -2,5 +2,8 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
+import { setupECharts } from './plugins/echarts'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+setupECharts(app)
+app.mount('#app')
