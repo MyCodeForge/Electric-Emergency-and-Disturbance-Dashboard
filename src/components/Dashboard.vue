@@ -22,22 +22,19 @@
         <div class="row">
           <div class="widget filter-section">
             <label for="year-filter">Filter by: </label>
-            <select id="month-filter" v-model="selectedMonth" @change="filterEventsByMonth">
+            <select id="month-filter" v-model="selectedMonth" @change="filterEvents">
               <option value="">All Months</option>
               <option :value="month" v-for="month in availableMonths" :key="month">{{ month }}</option>
             </select>
-            |
-            <select id="year-filter" v-model="selectedYear" @change="filterEventsByYear">
+            <select id="year-filter" v-model="selectedYear" @change="filterEvents">
               <option value="">All Years</option>
               <option :value="year" v-for="year in availableYears" :key="year">{{ year }}</option>
             </select>
-            |
-            <select id="region-filter" v-model="selectedRegion" @change="filterEventsByRegion">
+            <select id="region-filter" v-model="selectedRegion" @change="filterEvents">
               <option value="">All Regions</option>
               <option :value="region" v-for="region in availableRegions" :key="region">{{ region }}</option>
             </select>
-            |
-            <select id="event-filter" v-model="selectedEventType" @change="filterEventsByEventType">
+            <select id="event-filter" v-model="selectedEventType" @change="filterEvents">
               <option value="">All Event Types</option>
               <option :value="eventtype" v-for="eventtype in availableEventTypes" :key="eventtype">{{ eventtype }}</option>
             </select>
@@ -105,7 +102,7 @@
   import PowerSummaryCard from './PowerSummaryCard.vue';
   import RingChart from './RingChart.vue';
   import { apiService } from '../services/api.service';
-  import { DisturbanceEvent } from '../types/api';
+  import type { DisturbanceEvent } from '../types/api';
   
   const allEvents = ref<DisturbanceEvent[]>([]);
   const filteredEvents = ref<DisturbanceEvent[]>([]);
@@ -116,6 +113,10 @@
   const availableRegions = ref<string[]>([]);
   const availableEventTypes = ref<string[]>([]);
   const selectedYear = ref<string>('');
+  const selectedMonth = ref<string>('');
+  const selectedRegion = ref<string>('');
+  const selectedEventType = ref<string>('');
+  
   const monthOrder = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -148,32 +149,54 @@
       // Get unique Event Types for the filter
       availableEventTypes.value = [...new Set(allEvents.value.map(event => event.event_type).filter(event_type => event_type !== undefined))].sort();
 
-      // count total events and calculate averageDemandLoss
-      if (data) {
-        totalEvents.value = data.length || 0;
-        let totalDemandLoss = data.reduce((sum, event) => {
-          let demand_loss_in_mw = event.demand_loss_in_mw
-          if ( typeof demand_loss_in_mw !== 'number')
-            demand_loss_in_mw = 0;
-          
-          return sum + demand_loss_in_mw;
-        }, 0);
-
-        averageDemandLoss.value = totalEvents.value > 0 ? totalDemandLoss / totalEvents.value : 0;
-        averageDemandLoss.value = Number(averageDemandLoss.value).toFixed(2);
-      }
+      // Update metrics
+      updateMetrics(data);
     } catch (error) {
       console.error('Error fetching data:', error);
-      // Handle error (e.g., display an error message)
     }
   });
-  
-  const filterEventsByYear = () => {
-    if (selectedYear.value === '') {
-      filteredEvents.value = [...allEvents.value];
-    } else {
-      filteredEvents.value = allEvents.value.filter(event => String(event.year) === selectedYear.value);
+
+  const updateMetrics = (events: DisturbanceEvent[]) => {
+    if (events) {
+      totalEvents.value = events.length;
+      const totalDemandLoss = events.reduce((sum, event) => {
+        const demandLoss = event.demand_loss_in_mw ? parseFloat(event.demand_loss_in_mw) : 0;
+        return isNaN(demandLoss) ? sum : sum + demandLoss;
+      }, 0);
+
+      averageDemandLoss.value = totalEvents.value > 0 ? 
+        Number((totalDemandLoss / totalEvents.value).toFixed(2)) : 
+        0;
     }
+  };
+
+  const filterEvents = () => {
+    filteredEvents.value = allEvents.value.filter(event => {
+      // Check year filter
+      if (selectedYear.value && String(event.year) !== selectedYear.value) {
+        return false;
+      }
+      
+      // Check month filter
+      if (selectedMonth.value && event.month !== selectedMonth.value) {
+        return false;
+      }
+      
+      // Check region filter
+      if (selectedRegion.value && event.nerc_region !== selectedRegion.value) {
+        return false;
+      }
+      
+      // Check event type filter
+      if (selectedEventType.value && event.event_type !== selectedEventType.value) {
+        return false;
+      }
+      
+      return true;
+    });
+
+    // Update metrics based on filtered events
+    updateMetrics(filteredEvents.value);
   };
   
   const eventTypeData = ref({
@@ -183,8 +206,8 @@
         data: [150, 80, 200, 39],
         backgroundColor: ['#f2b16f', '#f9c492', '#65aba9', '#71bcb7'],
         borderWidth: 1,
-        borderColor: '#fff',
-        cutout: '50%', // You can also set the cutout here if you prefer
+        borderColor: ['#fff', '#fff', '#fff', '#fff'],
+        cutout: '50%',
       },
     ],
   });
@@ -192,7 +215,7 @@
   const eventTypeOptions = ref({
     plugins: {
       legend: {
-        position: 'right',
+        position: 'right' as 'right',
       },
       title: {
         display: true,
