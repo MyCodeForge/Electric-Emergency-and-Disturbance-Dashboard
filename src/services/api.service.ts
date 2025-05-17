@@ -1,5 +1,7 @@
 import { type DisturbanceEvent, type RegionSummary } from '../types/api';
-const API_BASE_URL = 'http://localhost:8080/v1';
+import { validationService } from './validation.service';
+
+const API_BASE_URL = 'https://electric-emergency-and-disturbance-api.vercel.app/api/v1';
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -26,7 +28,8 @@ export const apiService = {
     }
 
     const response = await fetch(url);
-    return handleResponse<DisturbanceEvent[]>(response);
+    const data = await handleResponse<DisturbanceEvent[]>(response);
+    return validationService.validateEvents(data);
   },
 
   async getDisturbanceEventsByRegion(
@@ -44,7 +47,8 @@ export const apiService = {
       url += `?${queryParams.toString()}`;
     }
     const response = await fetch(url);
-    return handleResponse<DisturbanceEvent[]>(response);
+    const data = await handleResponse<DisturbanceEvent[]>(response);
+    return validationService.validateEvents(data);
   },
 
   async getDisturbanceEventsByEventType(
@@ -62,7 +66,8 @@ export const apiService = {
       url += `?${queryParams.toString()}`;
     }
     const response = await fetch(url);
-    return handleResponse<DisturbanceEvent[]>(response);
+    const data = await handleResponse<DisturbanceEvent[]>(response);
+    return validationService.validateEvents(data);
   },
 
   async getDisturbanceEventsSummaryByRegion(params: any): Promise<RegionSummary> {

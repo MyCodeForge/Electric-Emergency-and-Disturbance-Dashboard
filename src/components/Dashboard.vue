@@ -49,7 +49,19 @@
           <div class="widgets col">
             <div class="widget">
               <div class="power-summary-section">
-                <PowerSummaryCard title="Average Demand Loss" :value="totalEvents" />
+                <PowerSummaryCard 
+                  title="Demand Loss (MW)" 
+                  :metrics="demandLossMetrics" 
+                  unit="MW" 
+                />
+              </div>
+            </div>
+            <div class="widget">
+              <div class="power-summary-section">
+                <PowerSummaryCard 
+                  title="Customers Affected" 
+                  :metrics="customersAffectedMetrics" 
+                />
               </div>
             </div>
             <div class="widget">
@@ -104,12 +116,14 @@
   import RingChart from './RingChart.vue';
   import ImpactScatterChart from './ImpactScatterChart.vue';
   import { apiService } from '../services/api.service';
-  import type { DisturbanceEvent } from '../types/api';
+  import { statisticsService } from '../services/statistics.service';
+  import type { DisturbanceEvent, SummaryMetrics } from '../types/api';
   
   const allEvents = ref<DisturbanceEvent[]>([]);
   const filteredEvents = ref<DisturbanceEvent[]>([]);
   const totalEvents = ref<number>(0);
-  const averageDemandLoss = ref<number>(0);
+  const demandLossMetrics = ref<SummaryMetrics>({ min: 0, max: 0, average: 0 });
+  const customersAffectedMetrics = ref<SummaryMetrics>({ min: 0, max: 0, average: 0 });
   const availableYears = ref<number[]>([]);
   const availableMonths = ref<string[]>([]);
   const availableRegions = ref<string[]>([]);
@@ -161,14 +175,9 @@
   const updateMetrics = (events: DisturbanceEvent[]) => {
     if (events) {
       totalEvents.value = events.length;
-      const totalDemandLoss = events.reduce((sum, event) => {
-        const demandLoss = event.demand_loss_in_mw ? parseFloat(event.demand_loss_in_mw) : 0;
-        return isNaN(demandLoss) ? sum : sum + demandLoss;
-      }, 0);
-
-      averageDemandLoss.value = totalEvents.value > 0 ? 
-        Number((totalDemandLoss / totalEvents.value).toFixed(2)) : 
-        0;
+      const metrics = statisticsService.calculateAllMetrics(events);
+      demandLossMetrics.value = metrics.demand_loss_in_mw;
+      customersAffectedMetrics.value = metrics.customers_affected;
     }
   };
 
