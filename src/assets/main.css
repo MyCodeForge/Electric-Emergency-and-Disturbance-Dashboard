@@ -73,6 +73,7 @@ body {
 
 .col {
   flex: 1 0 0;
+  margin: var(--spacing-sm);
 }
 
 .col-auto {
@@ -174,6 +175,9 @@ a {
   padding-left: var(--spacing-sm);
   width: 100%;
   font-size: var(--font-size-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .dashboard {

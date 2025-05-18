@@ -20,7 +20,7 @@
   
       <div class="highlight-dash">
         <div class="row">
-          <div class="widget filter-section">
+          <div class="widget filter-section col">
             <label for="year-filter">Filter by: </label>
             <select id="month-filter" v-model="selectedMonth" @change="filterEvents">
               <option value="">All Months</option>
@@ -39,13 +39,12 @@
               <option :value="eventtype" v-for="eventtype in availableEventTypes" :key="eventtype">{{ eventtype }}</option>
             </select>
           </div>
-        </div>
-
-        <div class="row">
           <div class="mascot col">
             <img src="../assets/mascot-looking.jpeg" alt="Mascot">
           </div>
-          
+        </div>
+
+        <div class="row">
           <div class="widgets col">
             <div class="widget">
               <div class="power-summary-section">
@@ -64,6 +63,8 @@
                 />
               </div>
             </div>
+          </div>
+          <div class="col">
             <div class="widget">
               <div class="chart-section">
                 <RingChart :chartData="eventTypeData" :options="eventTypeOptions" />
