@@ -42,6 +42,9 @@
                     variant="outlined"
                     density="comfortable"
                     clearable
+                    item-title="text"
+                    item-value="value"
+                    :return-object="false"
                     @update:model-value="filterEvents"
                     prepend-icon="mdi-calendar"
                   ></v-select>
@@ -141,10 +144,9 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, computed } from 'vue';
+  import { ref, onMounted, watch } from 'vue';
   import EventChart from './EventChart.vue';
   import EventTable from './EventTable.vue';
-  import SummaryCard from './SummaryCard.vue';
   import PowerSummaryCard from './PowerSummaryCard.vue';
   import RingChart from './RingChart.vue';
   import ImpactScatterChart from './ImpactScatterChart.vue';
@@ -161,15 +163,60 @@
   const availableMonths = ref<string[]>([]);
   const availableRegions = ref<string[]>([]);
   const availableEventTypes = ref<string[]>([]);
-  const selectedYear = ref<string>('');
-  const selectedMonth = ref<string>('');
-  const selectedRegion = ref<string>('');
-  const selectedEventType = ref<string>('');
+  const selectedYear = ref<number | null>(null);
+  const selectedMonth = ref<string | null>(null);
+  const selectedRegion = ref<string | null>(null);
+  const selectedEventType = ref<string | null>(null);
   
   const monthOrder = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
+
+  const updateMetrics = (events: DisturbanceEvent[]) => {
+    if (events) {
+      totalEvents.value = events.length;
+      const metrics = statisticsService.calculateAllMetrics(events);
+      demandLossMetrics.value = metrics.demand_loss_in_mw;
+      customersAffectedMetrics.value = metrics.customers_affected;
+    }
+  };
+
+  const filterEvents = () => {
+    if (!allEvents.value) return;
+    
+    filteredEvents.value = allEvents.value.filter(event => {
+      // Check year filter
+      if (selectedYear.value !== null && event.year !== selectedYear.value) {
+        return false;
+      }
+      
+      // Check month filter
+      if (selectedMonth.value !== null && event.month !== selectedMonth.value) {
+        return false;
+      }
+      
+      // Check region filter
+      if (selectedRegion.value !== null && event.nerc_region !== selectedRegion.value) {
+        return false;
+      }
+      
+      // Check event type filter
+      if (selectedEventType.value !== null && event.event_type !== selectedEventType.value) {
+        return false;
+      }
+      
+      return true;
+    });
+
+    // Update metrics based on filtered events
+    updateMetrics(filteredEvents.value);
+  };
+
+  // Watch for changes in any filter - now filterEvents is defined before being used in watch
+  watch([selectedMonth, selectedYear, selectedRegion, selectedEventType], () => {
+    filterEvents();
+  }, { immediate: true });
 
   onMounted(async () => {
     try {
@@ -179,8 +226,7 @@
         ...event,
         year: event.date_event_began ? new Date(event.date_event_began).getFullYear() : undefined,
       }));
-      filteredEvents.value = [...allEvents.value]; // Initialize filtered events
-  
+      
       // Get unique months for the filter
       availableMonths.value = [...new Set(allEvents.value.map(event => event.month).filter(month => month !== undefined))]
         .sort((a, b) => {
@@ -195,53 +241,24 @@
       // Get unique Regions for the filter
       availableRegions.value = [...new Set(allEvents.value.map(event => event.nerc_region).filter(nerc_region => nerc_region !== undefined))].sort();
       
-      // Get unique Event Types for the filter
-      availableEventTypes.value = [...new Set(allEvents.value.map(event => event.event_type).filter(event_type => event_type !== undefined))].sort();
+      // Get unique Event Types for the filter, splitting on commas
+      availableEventTypes.value = [...new Set(
+        allEvents.value
+          .map(event => event.event_type || '')
+          .flatMap(types => types.split(','))
+          .map(type => type.trim())
+          .filter(type => type !== '')
+      )].sort();
 
-      // Update metrics
-      updateMetrics(data);
+      // Initialize filtered events
+      filteredEvents.value = [...allEvents.value];
+      
+      // Update initial metrics
+      updateMetrics(filteredEvents.value);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   });
-
-  const updateMetrics = (events: DisturbanceEvent[]) => {
-    if (events) {
-      totalEvents.value = events.length;
-      const metrics = statisticsService.calculateAllMetrics(events);
-      demandLossMetrics.value = metrics.demand_loss_in_mw;
-      customersAffectedMetrics.value = metrics.customers_affected;
-    }
-  };
-
-  const filterEvents = () => {
-    filteredEvents.value = allEvents.value.filter(event => {
-      // Check year filter
-      if (selectedYear.value && String(event.year) !== selectedYear.value) {
-        return false;
-      }
-      
-      // Check month filter
-      if (selectedMonth.value && event.month !== selectedMonth.value) {
-        return false;
-      }
-      
-      // Check region filter
-      if (selectedRegion.value && event.nerc_region !== selectedRegion.value) {
-        return false;
-      }
-      
-      // Check event type filter
-      if (selectedEventType.value && event.event_type !== selectedEventType.value) {
-        return false;
-      }
-      
-      return true;
-    });
-
-    // Update metrics based on filtered events
-    updateMetrics(filteredEvents.value);
-  };
   
   const eventTypeData = ref({
     labels: ['Transmission Line Outage', 'Substation Failure', 'Severe Weather', 'Equipment Malfunction'],
