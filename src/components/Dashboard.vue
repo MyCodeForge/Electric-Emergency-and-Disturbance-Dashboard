@@ -20,24 +20,56 @@
   
       <div class="highlight-dash">
         <div class="row">
-          <div class="widget filter-section col">
-            <label for="year-filter">Filter by: </label>
-            <select id="month-filter" v-model="selectedMonth" @change="filterEvents">
-              <option value="">All Months</option>
-              <option :value="month" v-for="month in availableMonths" :key="month">{{ month }}</option>
-            </select>
-            <select id="year-filter" v-model="selectedYear" @change="filterEvents">
-              <option value="">All Years</option>
-              <option :value="year" v-for="year in availableYears" :key="year">{{ year }}</option>
-            </select>
-            <select id="region-filter" v-model="selectedRegion" @change="filterEvents">
-              <option value="">All Regions</option>
-              <option :value="region" v-for="region in availableRegions" :key="region">{{ region }}</option>
-            </select>
-            <select id="event-filter" v-model="selectedEventType" @change="filterEvents">
-              <option value="">All Event Types</option>
-              <option :value="eventtype" v-for="eventtype in availableEventTypes" :key="eventtype">{{ eventtype }}</option>
-            </select>
+          <div class="filter-section col">
+            <v-card class="filter-card">
+              <v-card-text>
+                <div class="filter-container">
+                  <v-select
+                    v-model="selectedMonth"
+                    :items="availableMonths"
+                    label="Filter by Month"
+                    variant="outlined"
+                    density="comfortable"
+                    clearable
+                    @update:model-value="filterEvents"
+                    prepend-icon="mdi-calendar-month"
+                  ></v-select>
+
+                  <v-select
+                    v-model="selectedYear"
+                    :items="availableYears"
+                    label="Filter by Year"
+                    variant="outlined"
+                    density="comfortable"
+                    clearable
+                    @update:model-value="filterEvents"
+                    prepend-icon="mdi-calendar"
+                  ></v-select>
+
+                  <v-select
+                    v-model="selectedRegion"
+                    :items="availableRegions"
+                    label="Filter by Region"
+                    variant="outlined"
+                    density="comfortable"
+                    clearable
+                    @update:model-value="filterEvents"
+                    prepend-icon="mdi-map-marker"
+                  ></v-select>
+
+                  <v-select
+                    v-model="selectedEventType"
+                    :items="availableEventTypes"
+                    label="Filter by Event Type"
+                    variant="outlined"
+                    density="comfortable"
+                    clearable
+                    @update:model-value="filterEvents"
+                    prepend-icon="mdi-flash"
+                  ></v-select>
+                </div>
+              </v-card-text>
+            </v-card>
           </div>
           <div class="mascot col">
             <img src="../assets/mascot-looking.jpeg" alt="Mascot">
@@ -269,5 +301,24 @@
     height: auto;
     max-width: 800px;
     border-radius: var(--border-radius-sm);
+  }
+
+  .filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .filter-card {
+    background-color: var(--card-bg) !important;
+    border-radius: var(--border-radius-sm) !important;
+  }
+
+  :deep(.v-field) {
+    border-radius: var(--border-radius-sm) !important;
+  }
+
+  :deep(.v-select) {
+    margin-bottom: var(--spacing-xs);
   }
   </style>

@@ -11,10 +11,12 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "chart.js": "^4.4.9",
     "echarts": "^5.6.0",
     "vue": "^3.5.13",
-    "vue-echarts": "^7.0.3"
+    "vue-echarts": "^7.0.3",
+    "vuetify": "^3.8.5"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.1",
