@@ -81,54 +81,68 @@
 
         <div class="row">
           <div class="widgets col">
-            <div class="widget">
-              <div class="power-summary-section">
-                <PowerSummaryCard 
-                  title="Demand Loss (MW)" 
-                  :metrics="demandLossMetrics" 
-                  unit="MW" 
-                />
-              </div>
-            </div>
-            <div class="widget">
-              <div class="power-summary-section">
-                <PowerSummaryCard 
-                  title="Customers Affected" 
-                  :metrics="customersAffectedMetrics" 
-                />
-              </div>
-            </div>
+            <v-card class="widget-card">
+              <v-card-text>
+                <div class="power-summary-section">
+                  <PowerSummaryCard 
+                    title="Demand Loss (MW)" 
+                    :metrics="demandLossMetrics" 
+                    unit="MW" 
+                  />
+                </div>
+              </v-card-text>
+            </v-card>
+            <v-card class="widget-card">
+              <v-card-text>
+                <div class="power-summary-section">
+                  <PowerSummaryCard 
+                    title="Customers Affected" 
+                    :metrics="customersAffectedMetrics" 
+                  />
+                </div>
+              </v-card-text>
+            </v-card>
           </div>
           <div class="col">
-            <div class="widget">
-              <div class="chart-section">
-                <RingChart :chartData="eventTypeData" :options="eventTypeOptions" />
-              </div>
-            </div>
+            <v-card class="widget-card">
+              <v-card-text>
+                <div class="chart-section">
+                  <RingChart :chartData="eventTypeData" :options="eventTypeOptions" />
+                </div>
+              </v-card-text>
+            </v-card>
           </div>
         </div>
 
         <div class="row">
           <div class="widgets col">
-            <div class="widget">
-              <div class="chart-section">
-                <EventChart :events="filteredEvents" />
-              </div>
-            </div>
+            <v-card class="widget-card">
+              <v-card-text>
+                <div class="chart-section">
+                  <EventChart :events="filteredEvents" />
+                </div>
+              </v-card-text>
+            </v-card>
           </div>
 
           <div class="widgets col">
-            <div class="widget">
-              <div class="map-section">
-                <h3>NERC Regions Map</h3>
-                <img src="../assets/nerc-regions.svg" alt="NERC Regions Map" class="nerc-map">
-              </div>
-            </div>
+            <v-card class="widget-card">
+              <v-card-text>
+                <div class="map-section">
+                  <h3>NERC Regions Map</h3>
+                  <img src="../assets/nerc-regions.svg" alt="NERC Regions Map" class="nerc-map">
+                </div>
+              </v-card-text>
+            </v-card>
           </div>
         </div>
         <div class="row">
           <div class="chart-section col widgets">
-            <ImpactScatterChart title="Demand Loss vs Customers Affected" :events="filteredEvents" />
+            <v-card class="widget-card">
+              <v-card-text>
+                <ImpactScatterChart title="Demand Loss vs Customers Affected" :events="filteredEvents" />
+              </v-card-text>
+            </v-card>
           </div>
         </div>
       </div>
@@ -330,7 +344,14 @@
     background-color: var(--card-bg) !important;
     border-radius: var(--border-radius-sm) !important;
   }
-
+  .widget-card{
+    background-color: var(--card-bg) !important;
+    border-radius: var(--border-radius-sm) !important;
+    margin-top: var(--spacing-sm);
+  }
+  .widget-card:first-child {
+    margin-top: 0;
+  }
   :deep(.v-field) {
     border-radius: var(--border-radius-sm) !important;
   }
